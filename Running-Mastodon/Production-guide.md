@@ -1,20 +1,193 @@
-Production guide
-================
+# Mastodon Production Guide
 
-The following HTTP headers are already set internally and should not be set again:
+**Disclaimer:**
+
+This guide was written for [Ubuntu Server 16.04](https://www.ubuntu.com/server), you may run into issues if you are using another operating system. We are welcoming contributions for guides to other distributions.
+
+This document is also written with the expectation that you have a technical level high enough to administrate Linux servers.
+
+If you need help setting up your instance, you may want to try tooting at the [#MastoAdmins](https://mastodon.social/tags/mastoadmins) hashtag.
+
+## What is this guide?
+
+This guide is a walk through of the setup process of a [Mastodon](https://github.com/tootsuite/mastodon/) instance.
+
+We use example.com to represent a domain or sub-domain. Example.com should be replaced with your instance domain or sub-domain.
+
+## Prerequisites
+
+You will need the following for this guide:
+
+- A server running [Ubuntu Server 16.04](https://www.ubuntu.com/server).
+- Root access to the server.
+- A domain or sub-domain to use for the instance.
+
+## DNS
+
+DNS records should be added before anything is done on the server.
+
+The records added are:
+
+-  A record (IPv4 address) for example.com
+-  AAAA record (IPv6 address) for example.com
+
+> ### A Helpful And Optional Note
+>
+> Using `tmux` when following through with this guide will be helpful.
+>
+>
+> Not only will this help you not lose your place if you are disconnected, it will let you have multiple terminal windows open for switching contexts (root user versus the mastodon user).
+>
+> You can install [tmux](https://github.com/tmux/tmux/wiki) from the package manager:
+>
+> ```sh
+> apt -y install tmux
+> ```
+
+## Dependency Installation
+
+All dependencies should be installed as root.
+
+### node.js Repository
+
+You will need to add an external repository so we can have the version of [node.js](https://nodejs.org/en/) required.
+
+We run this script to add the repository:
+
+```sh
+apt -y install curl
+curl -sL https://deb.nodesource.com/setup_6.x | bash -
+```
+
+The [node.js](https://nodejs.org/en/) repository is now added.
+
+###  Yarn Repository
+
+Another repository needs to be added so we can get the version of [Yarn](https://yarnpkg.com/en/) used by [Mastodon](https://github.com/tootsuite/mastodon/).
+
+This is how you add the repository:
+
+```sh
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+apt update
+```
+
+### Various Other Dependencies
+
+Now you need to install [Yarn](https://yarnpkg.com/en/) plus some more software.
+
+#### Explanation of the dependencies
+
+- imagemagick - Mastodon uses imagemagick for image related operations
+- ffmpeg - Mastodon uses ffmpeg for conversion of GIFs to MP4s
+- libprotobuf-dev and protobuf-compiler - Mastodon uses these for language detection
+- nginx - nginx is our frontend web server
+- redis-* - Mastodon uses redis for its in-memory data structure store
+- postgresql-* - Mastodon uses PostgreSQL as its SQL database
+- nodejs - Node is used for Mastodon's streaming API
+- yarn - Yarn is a Node.js package manager
+- Other -dev packages, g++ - these are needed for the compilation of Ruby using ruby-build.
+
+```sh
+apt -y install imagemagick ffmpeg libpq-dev libxml2-dev libxslt1-dev file git-core g++ libprotobuf-dev protobuf-compiler pkg-config nodejs gcc autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm3 libgdbm-dev nginx redis-server redis-tools postgresql postgresql-contrib letsencrypt yarn libidn11-dev libicu-dev
+```
+
+### Dependencies That Need To Be Added As A Non-Root User
+
+Let us create this user first:
+
+```sh
+adduser mastodon
+```
+
+Log in as the `mastodon` user:
+
+
+```sh
+sudo su - mastodon
+```
+
+We will need to set up [`rbenv`](https://github.com/rbenv/rbenv) and [`ruby-build`](https://github.com/rbenv/ruby-build):
+
+```sh
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+cd ~/.rbenv && src/configure && make -C src
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+# Restart shell
+exec bash
+# Check if rbenv is correctly installed
+type rbenv
+# Install ruby-build as rbenv plugin
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+```
+
+Now that [`rbenv`](https://github.com/rbenv/rbenv) and [`ruby-build`](https://github.com/rbenv/ruby-build) are installed, we will install the
+[Ruby](https://www.ruby-lang.org/en/) version which [Mastodon](https://github.com/tootsuite/mastodon/) uses. That version will also need to be enabled.
+
+To enable [Ruby](https://www.ruby-lang.org/en/), run:
+
+```sh
+rbenv install 2.5.0
+rbenv global 2.5.0
+```
+
+**This will take some time. Go stretch for a bit and drink some water while the commands run.**
+
+### node.js And Ruby Dependencies
+
+Now that [Ruby](https://www.ruby-lang.org/en/) is enabled, we will clone the [Mastodon git repository](https://github.com/tootsuite/mastodon/) and install the [Ruby](https://www.ruby-lang.org/en/) and [node.js](https://nodejs.org/en/) dependancies.
+
+Run the following to clone and install:
+
+```sh
+# Return to mastodon user's home directory
+cd ~
+# Clone the mastodon git repository into ~/live
+git clone https://github.com/tootsuite/mastodon.git live
+# Change directory to ~live
+cd ~/live
+# Checkout to the latest stable branch
+git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)
+# Install bundler
+gem install bundler
+# Use bundler to install the rest of the Ruby dependencies
+bundle install -j$(getconf _NPROCESSORS_ONLN) --deployment --without development test
+# Use yarn to install node.js dependencies
+yarn install --pure-lockfile
+```
+
+That is all we need to do for now with the `mastodon` user, you can now `exit` back to root.
+
+## PostgreSQL Database Creation
+
+[Mastodon](https://github.com/tootsuite/mastodon/) requires access to a [PostgreSQL](https://www.postgresql.org) instance.
+
+Create a user for a [PostgreSQL](https://www.postgresql.org) instance:
 
 ```
-'Server'                 => 'Mastodon',
-'X-Frame-Options'        => 'DENY',
-'X-Content-Type-Options' => 'nosniff',
-'X-XSS-Protection'       => '1; mode=block',
+# Launch psql as the postgres user
+sudo -u postgres psql
+
+# In the following prompt
+CREATE USER mastodon CREATEDB;
+\q
 ```
 
-## Nginx
+**Note** that we do not set up a password of any kind, this is because we will be using ident authentication. This allows local users to access the database without a password.
 
-Regardless of whether you go with the Docker approach or not, here is an example Nginx server configuration.
+## nginx Configuration
 
-At a minimum, you'll want to replace any occurrence of `example.com` with your actual hostname, and `/home/mastodon/live/public` with the location of your actual mastodon `public/` directory.
+You need to configure [nginx](http://nginx.org) to serve your [Mastodon](https://github.com/tootsuite/mastodon/) instance.
+
+**Reminder: Replace all occurrences of example.com with your own instance's domain or sub-domain.**
+
+`cd` to `/etc/nginx/sites-available` and open a new file:
+
+`nano /etc/nginx/sites-available/example.com.conf`
+
+Copy and paste the following and make edits as necessary:
 
 ```nginx
 map $http_upgrade $connection_upgrade {
@@ -26,6 +199,7 @@ server {
   listen 80;
   listen [::]:80;
   server_name example.com;
+  root /home/mastodon/live/public;
   # Useful for Let's Encrypt
   location /.well-known/acme-challenge/ { allow all; }
   location / { return 301 https://$host$request_uri; }
@@ -43,7 +217,6 @@ server {
 
   ssl_certificate     /etc/letsencrypt/live/example.com/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
-  ssl_dhparam         /etc/ssl/certs/dhparam.pem;
 
   keepalive_timeout    70;
   sendfile             on;
@@ -61,14 +234,19 @@ server {
   gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 
   add_header Strict-Transport-Security "max-age=31536000";
-  add_header Content-Security-Policy "style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'self'; img-src data: https:; media-src data: https:; connect-src 'self' wss://example.com; upgrade-insecure-requests";
 
   location / {
     try_files $uri @proxy;
   }
 
-  location ~ ^/(assets|system/media_attachments/files|system/accounts/avatars) {
+  location ~ ^/(emoji|packs|system/accounts/avatars|system/media_attachments/files) {
     add_header Cache-Control "public, max-age=31536000, immutable";
+    try_files $uri @proxy;
+  }
+  
+  location /sw.js {
+    add_header Cache-Control "public, max-age=0";
+    try_files $uri @proxy;
   }
 
   location @proxy {
@@ -96,7 +274,7 @@ server {
     proxy_set_header X-Forwarded-Proto https;
     proxy_set_header Proxy "";
 
-    proxy_pass http://localhost:4000;
+    proxy_pass http://127.0.0.1:4000;
     proxy_buffering off;
     proxy_redirect off;
     proxy_http_version 1.1;
@@ -110,156 +288,164 @@ server {
 }
 ```
 
-## Running in production without Docker
-
-It is recommended to create a special user for mastodon on the server (you could call the user `mastodon`), though remember to disable outside login for it. You should only be able to get into that user through `sudo -u mastodon`.
-
-## General dependencies
-
-### Ubuntu / Debian
-
-    sudo apt-get install imagemagick ffmpeg libpq-dev libxml2-dev libxslt1-dev file git curl
-    curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -
-    sudo apt-get install nodejs
-    sudo npm install -g yarn
-
-### CentOS / RHEL
-
-    sudo yum install libxml2-devel ImageMagick libxslt-devel git curl file
-    sudo yum -y install epel-release
-    sudo rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
-    sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
-    sudo yum -y install ffmpeg ffmpeg-devel
-
-    sudo yum group install "Development tools"
-    curl -sL https://rpm.nodesource.com/setup_6.x | sudo bash -
-    sudo yum install nodejs
-    sudo npm install -g yarn
-
-## Redis
-
-### Ubuntu / Debian
-
-    sudo apt-get install redis-server redis-tools
-
-### CentOS / RHEL
-
-    sudo yum install redis rubygem-redis
-
-## Postgres
-
-### Ubuntu / Debian
-
-    sudo apt-get install postgresql postgresql-contrib
-
-### CentOS / RHEL
-
-    sudo yum install postgresql-server postgresql postgresql-contrib postgresql-devel
-
-Initial Setup postgres:
-
-    sudo postgresql-setup initdb
-    sudo systemctl start postgresql
-    sudo systemctl enable postgresql
-
-### All Operating Systems:
-
-Set up a user and database for Mastodon:
-
-    sudo -u postgres psql
-
-In the prompt:
-
-    CREATE USER mastodon CREATEDB;
-    \q
-
-### Ubuntu 16.04
-
-Under Ubuntu 16.04, you will need to explicitly enable ident authentication so that local users can connect to the database without a password:
+Activate the [nginx](http://nginx.org) configuration added:
 
 ```sh
-    sudo sed -i '/^local.*postgres.*peer$/a host    all     all     127.0.0.1/32    ident' /etc/postgresql/9.?/main/pg_hba.conf
+cd /etc/nginx/sites-enabled
+ln -s ../sites-available/example.com.conf
 ```
 
-and install an ident daemon, which does not come installed by default:
+This configuration makes the assumption you are using [Let's Encrypt](https://letsencrypt.org) as your TLS certificate provider.
 
-    sudo apt-get install pidentd
-    sudo systemctl enable pidentd
-    sudo systemctl start pidentd
-    sudo systemctl restart postgresql
+**If you are going to be using Let's Encrypt as your TLS certificate provider, see the
+next sub-section. If not edit the `ssl_certificate` and `ssl_certificate_key` values
+accordingly.**
 
-### Debian 8
+## Let's Encrypt
 
-Under Debian 8, the default version of nginx available is too old to work with the above configuration file (as it uses http2). To install a newer version of nginx that supports http2 (v1.9.5+), you have to add the jessie-backports repo to your `sources.list`:
+This section is only relevant if you are using [Let's Encrypt](https://letsencrypt.org/)
+as your TLS certificate provider.
 
-```bash
-$ echo "deb http://ftp.debian.org/debian jessie-backports main" | sudo tee -a /etc/apt/sources.list
-$ sudo apt-get update
-$ sudo apt-get install -t jessie-backports nginx
+### Generation Of The Certificate
+
+We need to generate Let's Encrypt certificates.
+
+**Make sure to replace any occurrence of 'example.com' with your Mastodon instance's domain.**
+
+Make sure that [nginx](http://nginx.org) is stopped at this point:
+
+```sh
+systemctl stop nginx
 ```
 
-## Rbenv
+We will be creating the certificate twice, once with TLS SNI validation in standalone mode and the second time we will be using the webroot method. This is required due to the way
+[nginx](http://nginx.org) and the [Let's Encrypt](https://letsencrypt.org/) tool works.
 
-It is recommended to use rbenv (exclusively from the `mastodon` user) to install the desired Ruby version. Follow the guides to [install rbenv][1] and [rbenv-build][2] (I recommend checking the [prerequisites][3] for your system on the rbenv-build project and installing them beforehand, obviously outside the unprivileged `mastodon` user)
+```sh
+letsencrypt certonly --standalone -d example.com
+```
 
-[1]: https://github.com/rbenv/rbenv#installation
-[2]: https://github.com/rbenv/ruby-build#installation
-[3]: https://github.com/rbenv/ruby-build/wiki#suggested-build-environment
+After that successfully completes, we will use the webroot method. This requires [nginx](http://nginx.org) to be running:
 
-Then once `rbenv` is ready, run `rbenv install 2.4.1` to install the Ruby version for Mastodon.
+```sh
+systemctl start nginx
+# The letsencrypt tool will ask if you want issue a new cert, please choose that option
+letsencrypt certonly --webroot -d example.com -w /home/mastodon/live/public/
+```
 
-## Git
+### Automated Renewal Of Let's Encrypt Certificate
 
-You need the `git-core` package installed on your system. If it is so, run the shell from the `mastodon` user:
+[Let's Encrypt](https://letsencrypt.org/) certificates have a validity period of 90 days.
 
-    sudo -su mastodon
+You need to renew your certificate before the expiration date. Not doing so will make users of your instance unable to access the instance and users of other instances unable to federate with yours.
 
-And enter the following commands:
+We can create a cron job that runs daily to do this:
 
-    cd ~
-    git clone https://github.com/tootsuite/mastodon.git live
-    cd live
-    git checkout $(git tag | tail -n 1)
+```sh
+nano /etc/cron.daily/letsencrypt-renew
+```
 
-Then you can proceed to install project dependencies:
+Copy and paste this script into that file:
 
-    gem install bundler
-    bundle install --deployment --without development test
-    yarn install --pure-lockfile
+## Debian 8
 
-## Configuration
+Debian 8 sucks no one cares!!!!!!
 
-Then you have to configure your instance:
+Save and exit the file.
 
-    cp .env.production.sample .env.production
-    nano .env.production
+Make the script executable and restart the cron daemon so that the script runs daily:
 
-Fill in the important data, like host/port of the redis database, host/port/username/password of the postgres database, your domain name, SMTP details (e.g. from Mailgun or equivalent transactional e-mail service, many have free tiers), whether you intend to use SSL, etc. If you need to generate secrets, you can use:
+```sh
+chmod +x /etc/cron.daily/letsencrypt-renew
+systemctl restart cron
+```
 
-    rake secret
+That is it. Your server will renew your [Let's Encrypt](https://letsencrypt.org/) certificate.
 
-To get a random string. If you are setting up on one single server (most likely), then `REDIS_HOST` is localhost and `DB_HOST` is `/var/run/postgresql`, `DB_USER` is `mastodon` and `DB_NAME` is `mastodon_production` while `DB_PASS` is empty because this setup will use the ident authentication method (system user "mastodon" maps to postgres user "mastodon").
+## Mastodon Application Configuration
 
-Configuring the instance hostname:
+We will configure the Mastodon application.
 
-- `LOCAL_DOMAIN` should be the domain/hostname of your instance. This is **absolutely required** as it is used for generating unique IDs for everything federation-related.
-- `LOCAL_HTTPS` set it to `true` if HTTPS works on your website. This is used to generate canonical URLs, which is also important when generating and parsing federation-related IDs.
+For this we will switch to the `mastodon` system user:
 
-## Setup
 
-And set up the database for the first time, this will create the tables and basic data:
+```sh
+sudo su - mastodon
+```
 
-    RAILS_ENV=production bundle exec rails db:setup
+Change directory to `~live` and edit the [Mastodon](https://github.com/tootsuite/mastodon/) application configuration:
 
-Finally, pre-compile all CSS and JavaScript files:
+```sh
+cd ~/live
+cp .env.production.sample .env.production
+nano .env.production
+```
 
-    RAILS_ENV=production bundle exec rails assets:precompile
+For the purposes of this guide, these are the values to be edited:
 
-## Systemd
+```
+# Your Redis host
+REDIS_HOST=127.0.0.1
+# Your Redis port
+REDIS_PORT=6379
+# Your PostgreSQL host
+DB_HOST=/var/run/postgresql
+# Your PostgreSQL user
+DB_USER=mastodon
+# Your PostgreSQL DB name
+DB_NAME=mastodon_production
+# Leave DB password empty
+DB_PASS=
+# Your DB_PORT
+DB_PORT=5432
 
-Example systemd configuration for the web workers, to be placed in `/etc/systemd/system/mastodon-web.service`:
+# Your instance's domain
+LOCAL_DOMAIN=example.com
+# We have HTTPS enabled
+LOCAL_HTTPS=true
 
-```systemd
+# Application secrets
+# Generate each with `RAILS_ENV=production bundle exec rake secret`
+PAPERCLIP_SECRET=
+SECRET_KEY_BASE=
+OTP_SECRET=
+
+# Web Push VAPID keys
+# Generate with `RAILS_ENV=production bundle exec rake mastodon:webpush:generate_vapid_key`
+VAPID_PRIVATE_KEY=
+VAPID_PUBLIC_KEY=
+
+# All SMTP details, Mailgun and Sparkpost have free tiers
+SMTP_SERVER=
+SMTP_PORT=
+SMTP_LOGIN=
+SMTP_PASSWORD=
+SMTP_FROM_ADDRESS=
+```
+
+We now need to set up the [PostgreSQL](https://www.postgresql.org) database for the first time:
+
+```sh
+RAILS_ENV=production bundle exec rails db:setup
+```
+
+Then we will need to precompile all CSS and JavaScript files:
+
+```sh
+RAILS_ENV=production bundle exec rails assets:precompile
+```
+
+**The assets precompilation takes a couple minutes, so this is a good time to take another break.**
+
+## Mastodon systemd Service Files
+
+We will need three [systemd](https://github.com/systemd/systemd) service files for each Mastodon service.
+
+Now switch back to the root user.
+
+For the [Mastodon](https://github.com/tootsuite/mastodon/) web workers service place the following in `/etc/systemd/system/mastodon-web.service`:
+
+```
 [Unit]
 Description=mastodon-web
 After=network.target
@@ -271,6 +457,7 @@ WorkingDirectory=/home/mastodon/live
 Environment="RAILS_ENV=production"
 Environment="PORT=3000"
 ExecStart=/home/mastodon/.rbenv/shims/bundle exec puma -C config/puma.rb
+ExecReload=/bin/kill -SIGUSR1 $MAINPID
 TimeoutSec=15
 Restart=always
 
@@ -278,9 +465,9 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-Example systemd configuration for the background workers, to be placed in `/etc/systemd/system/mastodon-sidekiq.service`:
+For [Mastodon](https://github.com/tootsuite/mastodon/) background queue service, place the following in `/etc/systemd/system/mastodon-sidekiq.service`:
 
-```systemd
+```
 [Unit]
 Description=mastodon-sidekiq
 After=network.target
@@ -299,9 +486,9 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-Example systemd configuration file for the streaming API, to be placed in `/etc/systemd/system/mastodon-streaming.service`:
+For the [Mastodon](https://github.com/tootsuite/mastodon/) streaming API service place the following in `/etc/systemd/system/mastodon-streaming.service`:
 
-```systemd
+```
 [Unit]
 Description=mastodon-streaming
 After=network.target
@@ -320,46 +507,67 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-This allows you to `sudo systemctl enable /etc/systemd/system/mastodon-*.service` and `sudo systemctl start mastodon-web.service mastodon-sidekiq.service mastodon-streaming.service` to get things going.
-
-## Cronjobs
-
-There are several tasks that should be run once a day to ensure that mastodon is
-running smoothly. As your mastodon user run `crontab -e` and enter the following
+Now you need to enable all of these services:
 
 ```sh
-    RAILS_ENV=production
-    @daily cd /home/mastodon/live && /home/mastodon/.rbenv/shims/bundle exec rake mastodon:daily > /dev/null
+systemctl enable /etc/systemd/system/mastodon-*.service
 ```
 
-## Things to look out for when upgrading Mastodon
-
-If you want a stable release for production use, you should use tagged releases. To checkout the latest available tagged version:
+Now start the services:
 
 ```sh
-    cd ~mastodon/live/
-    git fetch
-    git checkout $(git tag | tail -n 1)
+systemctl start mastodon-*.service
 ```
 
-As part of your deploy, you may need to run:
-
-- `RAILS_ENV=production bundle exec rails db:migrate`
-
-if anything in the `/db/` directory has changed, and/or
-
-- `yarn install --pure-lockfile`
-- `RAILS_ENV=production bundle exec rails assets:precompile`
-
-if anything in the `/app/assets` directory changed.
-
-Please read the [**release notes**](https://github.com/tootsuite/mastodon/releases/) when you upgrade,
-they might contain specific instructions about how to update (and they always include information
-about which new features the release has, and which bugs are fixed).
-
-Also, Mastodon runs in memory, so you need to restart it before you see any changes (including new
-precompiled assets). If you're using systemd, that would be:
+Check that they are properly running:
 
 ```sh
-    sudo systemctl restart mastodon-*.service
+systemctl status mastodon-*.service
 ```
+
+## Remote media attachment cache cleanup
+
+Mastodon downloads media attachments from other instances and caches it locally for viewing. This cache can grow quite large if
+not cleaned up periodically and can cause issues such as low disk space or a bloated S3 bucket.
+
+The recommended method to clean up the remote media cache is a cron job that runs daily like so (put this in the mastodon system user's crontab with `crontab -e`.)
+
+```sh
+RAILS_ENV=production
+@daily cd /home/mastodon/live && /home/mastodon/.rbenv/shims/bundle exec rake mastodon:media:remove_remote
+```
+
+That rake task removes cached remote media attachments that are older than NUM_DAYS, NUM_DAYS defaults to 7 days (1 week) if not specified. NUM_DAYS is another environment variable so you can specify it like so:
+
+```sh
+RAILS_ENV=production
+NUM_DAYS=14
+@daily cd /home/mastodon/live && /home/mastodon/.rbenv/shims/bundle exec rake mastodon:media:remove_remote
+```
+
+## Email Service
+
+If you plan on receiving email notifications or running more than just a single-user instance, you likely will want to get set up with an email provider.
+
+There are several free email providers out there- a couple of decent ones are Mailgun.com, which requires a credit card but gives 10,000 free emails, and Sparkpost.com, which gives 15,000 with no credit card but requires you not be on a .space tld.
+
+It may be easier to use a subdomain to setup your email with a custom provider - in this case, when registering your domain with the email service, sign up as something like "mail.domain.com"
+
+Once you create your account, follow the instructions each provider gives you for updating your DNS records.  Once you have all the information ready to go and the service validates your DNS configuration, edit your config file.  These records should already exist in the configuration, but here's a sample setup that uses Mailgun that you can replace with your own personal info:
+
+SMTP_SERVER=smtp.mailgun.org
+SMTP_PORT=587
+SMTP_LOGIN=anAccountThatIsntPostmaster@mstdn.domain.com
+SMTP_PASSWORD=HolySnacksAPassword
+SMTP_FROM_ADDRESS=Domain.com Mastodon Admin <notifications@domain.com>
+
+Finally, to test this, spin up a Rails console (see [the administration guide](https://github.com/tootsuite/documentation/blob/master/Running-Mastodon/Administration-guide.md)) and run the following commands to test this out:
+
+```
+m = UserMailer.new.mail to:'email@address.com', subject: 'test', body: 'awoo'
+m.deliver
+```
+
+That is all! If everything was done correctly, a [Mastodon](https://github.com/tootsuite/mastodon/) instance will appear when you visit `https://example.com` in a web browser.
+
+Congratulations and welcome to the fediverse!

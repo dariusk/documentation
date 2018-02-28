@@ -9,10 +9,12 @@ API overview
   - [Accounts](#accounts)
   - [Apps](#apps)
   - [Blocks](#blocks)
+  - [Domain blocks](#domain-blocks)
   - [Favourites](#favourites)
   - [Follow Requests](#follow-requests)
   - [Follows](#follows)
   - [Instances](#instances)
+  - [Lists](#lists)
   - [Media](#media)
   - [Mutes](#mutes)
   - [Notifications](#notifications)
@@ -26,8 +28,10 @@ API overview
   - [Attachment](#attachment)
   - [Card](#card)
   - [Context](#context)
+  - [Emoji](#emoji)
   - [Error](#error)
   - [Instance](#instance)
+  - [List](#list)
   - [Mention](#mention)
   - [Notification](#notification)
   - [Relationship](#relationship)
@@ -39,53 +43,26 @@ ___
 
 ## Available libraries
 
-| Language             | Library                                                                        | Developer(s)                                                                   |
-| -------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| Apex (Salesforce)    | [apex-mastodon](https://github.com/tzmfreedom/apex-mastodon)                   |                                                                                |
-| C# (.NET Standard)   | [Mastodot](https://github.com/yamachu/Mastodot)                                |                                                                                |
-| C# (.NET Standard)   | [Mastonet](https://github.com/glacasa/Mastonet)                                |                                                                                |
-| C# (.NET)            | [mastodon-api-cs](https://github.com/pawotter/mastodon-api-cs)                 |                                                                                |
-| C# (.NET)            | [Mastodon.Net](https://github.com/Tlaster/Mastodon.Net)                        |                                                                                |
-| Crystal              | [mastodon.cr](https://github.com/decors/mastodon.cr)                           |                                                                                |
-| Elixir               | [hunter](https://github.com/milmazz/hunter)                                    |                                                                                |
-| Go                   | [go-mastodon](https://github.com/mattn/go-mastodon)                            |                                                                                |
-| Go                   | [madon](https://github.com/McKael/madon)                                       |                                                                                |
-| Haskell              | [hastodon](https://github.com/syucream/hastodon)                               |                                                                                |
-| Java                 | [mastodon4j](https://github.com/sys1yagi/mastodon4j)                           |                                                                                |
-| JavaScript           | [libodonjs](https://github.com/Zatnosk/libodonjs)                              |                                                                                |
-| Javascript (Browser) | [mastodon.js](https://github.com/Kirschn/mastodon.js)                          |                                                                                |
-| JavaScript (Node.js) | [node-mastodon](https://github.com/jessicahayley/node-mastodon)                |                                                                                |
-| Perl                 | [Mastodon::Client](https://metacpan.org/pod/Mastodon::Client)                  | [@jjatria@mastodon.cloud](https://mastodon.cloud/@jjatria)                     |
-| PHP                  | [Mastodon-api-php](https://github.com/yks118/Mastodon-api-php)                 |                                                                                |
-| PHP                  | [MastodonOAuthPHP](https://github.com/TheCodingCompany/MastodonOAuthPHP)       |                                                                                |
-| PHP                  | [Phediverse Mastodon REST Client](https://github.com/phediverse/mastodon-rest) |                                                                                |
-| PHP                  | [TootoPHP](https://framagit.org/MaxKoder/TootoPHP)                             |                                                                                |
-| Python               | [Mastodon.py](https://github.com/halcy/Mastodon.py)                            |                                                                                |
-| R                    | [mastodon](https://github.com/ThomasChln/mastodon)                             |                                                                                |
-| Ruby                 | [mastodon-api](https://github.com/tootsuite/mastodon-api)                      | [@Gargron@mastodon.social](https://mastodon.social/@Gargron)                   |
-| Rust                 | [mammut](https://github.com/Aaronepower/mammut)                                | [@Aaronepower@mastodon.social](https://mastodon.social/@Aaronepower)           |
-| Scala                | [scaladon](https://github.com/schwitzerm/scaladon)                             |                                                                                |
-| Swift                | [MastodonKit](https://github.com/ornithocoder/MastodonKit)                     | [@ornithocoder@mastodon.technology](https://mastodon.technology/@ornithocoder) |
+There are several libraries to interact with the Mastodon API. The list of libraries can be found on the [Libraries page](Libraries.md).
 
 ___
 
 ## Notes
 
-### Parameter types
+###### Parameter types
 
 When an array parameter is mentioned, the Rails convention of specifying array parameters in query strings is meant.
-For example, a ruby array like `foo = [1, 2, 3]` can be encoded in the params as `foo[]=1&foo[]=2&foo[]=3`.
-Square brackets can be indexed but can also be empty.
+For example, a ruby array like `foo = [1, 2, 3]` should be encoded in the params as `foo[]=1&foo[]=2&foo[]=3`, with empty square brackets.
 
-When a file parameter is mentioned, a form-encoded upload is expected.
+When sending binary data, such as files, Mastodon expects clients to use the `multipart/form-data` MIME type. This applies to media attachments, account avatars and account headers.
 
-### Selecting ranges
+###### Selecting ranges
 
 For most `GET` operations that return arrays, the query parameters `max_id` and `since_id` can be used to specify the range of IDs to return.
 API methods that return collections of items can return a `Link` header containing URLs for the `next` and `prev` pages.
 See the [Link header RFC](https://tools.ietf.org/html/rfc5988) for more information.
 
-### Errors
+###### Errors
 
 If the request you make doesn't go through, Mastodon will usually respond with an [Error](#error).
 
@@ -105,7 +82,13 @@ Returns an [Account](#account).
 
     GET /api/v1/accounts/verify_credentials
 
-Returns the authenticated user's [Account](#account).
+Returns the authenticated user's [Account](#account) with an extra attribute `source` which contains these keys:
+
+| Attribute   | Description                                              |
+| ----------- | -------------------------------------------------------- |
+| `privacy`   | Selected preference: Default privacy of new toots        |
+| `sensitive` | Selected preference: Mark media as sensitive by default? |
+| `note`      | Plain-text version of the account's `note`               |
 
 #### Updating the current user:
 
@@ -113,12 +96,14 @@ Returns the authenticated user's [Account](#account).
 
 Form data:
 
-| Field          | Description                                                                                                                            | Optional   |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| `display_name` | The name to display in the user's profile                                                                                              | yes        |
-| `note`         | A new biography for the user                                                                                                           | yes        |
-| `avatar`       | A base64 encoded image to display as the user's avatar (e.g. `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUoAAADrCAYAAAA...`)       | yes        | 
-| `header`       | A base64 encoded image to display as the user's header image (e.g. `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUoAAADrCAYAAAA...`) | yes        |
+| Field          | Description                                                       | Optional   |
+| -------------- | ----------------------------------------------------------------- | ---------- |
+| `display_name` | The name to display in the user's profile                         | yes        |
+| `note`         | A new biography for the user                                      | yes        |
+| `avatar`       | An avatar for the user (encoded using `multipart/form-data`)      | yes        |
+| `header`       | A header image for the user (encoded using `multipart/form-data`) | yes        |
+
+Returns the authenticated user's [Account](#account).
 
 #### Getting an account's followers:
 
@@ -128,11 +113,11 @@ Query parameters:
 
 | Field      | Description                                                    | Optional   |
 | ---------- | -------------------------------------------------------------- | ---------- |
-| `max_id`   | Get a list of followers with ID less than or equal this value  | yes        |
+| `max_id`   | Get a list of followers with ID less than this value           | yes        |
 | `since_id` | Get a list of followers with ID greater than this value        | yes        |
 | `limit`    | Maximum number of followers to get (Default 40, Max 80)        | yes        |
 
-`max_id` and `since_id` are usually get from the `Link` header.
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. It is **not** possible to use the `id` of the returned objects to construct your own URLs, because the results are sorted by an internal key.
 
 Returns an array of [Accounts](#account).
 
@@ -144,11 +129,11 @@ Query parameters:
 
 | Field      | Description                                                    | Optional   |
 | ---------- | -------------------------------------------------------------- | ---------- |
-| `max_id`   | Get a list of followings with ID less than or equal this value | yes        |
+| `max_id`   | Get a list of followings with ID less than this value          | yes        |
 | `since_id` | Get a list of followings with ID greater than this value       | yes        |
 | `limit`    | Maximum number of followings to get (Default 40, Max 80)       | yes        |
 
-`max_id` and `since_id` are usually get from the `Link` header.
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. It is **not** possible to use the `id` of the returned objects to construct your own URLs, because the results are sorted by an internal key.
 
 Returns an array of [Accounts](#account).
 
@@ -161,12 +146,13 @@ Query parameters:
 | Field             | Description                                                  | Optional   |
 | ----------------- | -----------------------------------------------------------  | ---------- |
 | `only_media`      | Only return statuses that have media attachments             | yes        |
+| `pinned`          | Only return statuses that have been pinned                   | yes        |
 | `exclude_replies` | Skip statuses that reply to other statuses                   | yes        |
-| `max_id`          | Get a list of statuses with ID less than or equal this value | yes        |
+| `max_id`          | Get a list of statuses with ID less than this value          | yes        |
 | `since_id`        | Get a list of statuses with ID greater than this value       | yes        |
 | `limit`           | Maximum number of statuses to get (Default 20, Max 40)       | yes        |
 
-`max_id` and `since_id` are usually get from the `Link` header.
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. However, it is possible to use the `id` of the returned objects to construct your own URLs.
 
 Returns an array of [Statuses](#status).
 
@@ -187,6 +173,15 @@ Returns the target account's [Relationship](#relationship).
 #### Muting/unmuting an account:
 
     POST /api/v1/accounts/:id/mute
+    
+    Form data:
+
+| Field          | Description                               | Optional   |
+| -------------- | ----------------------------------------- | ---------- |
+| `notifications` | Determines whether the mute will mute notifications or not. Default(true) | yes        |
+
+Returns the target account's [Relationship](#relationship).
+    
     POST /api/v1/accounts/:id/unmute
 
 Returns the target account's [Relationship](#relationship).
@@ -201,7 +196,7 @@ Query parameters:
 | ----- | ----------------------------  | ---------- |
 | `id`  | Account IDs (can be an array) | no         |
 
-Returns an array of [Relationships](#relationships) of the current user to a list of given accounts.
+Returns an array of [Relationships](#relationship) of the current user to a list of given accounts.
 
 #### Searching for accounts:
 
@@ -213,6 +208,7 @@ Query parameters:
 | ----------------- | ------------------------------------------------------------- | ---------- |
 | `q`               | What to search for                                            | no         |
 | `limit`           | Maximum number of matching accounts to return (default: `40`) | yes        |
+| `following`       | Limit the search to following (boolean, default `false`)      | yes        |
 
 Returns an array of matching [Accounts](#accounts).
 
@@ -249,13 +245,55 @@ Query parameters:
 
 | Field             | Description                                                   | Optional   |
 | ----------------- | ------------------------------------------------------------- | ---------- |
-| `max_id`          | Get a list of blocks with ID less than or equal this value    | yes        |
+| `max_id`          | Get a list of blocks with ID less than this value             | yes        |
 | `since_id`        | Get a list of blocks with ID greater than this value          | yes        |
 | `limit`           | Maximum number of blocks to get (Default 40, Max 80)          | yes        |
 
-`max_id` and `since_id` are usually get from the `Link` header.
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. It is **not** possible to use the `id` of the returned objects to construct your own URLs, because the results are sorted by an internal key.
 
 Returns an array of [Accounts](#account) blocked by the authenticated user.
+
+### Domain blocks
+
+#### Fetching a user's blocked domains:
+
+    GET /api/v1/domain_blocks
+
+Query parameters:
+
+| Field             | Description                                                   | Optional   |
+| ----------------- | ------------------------------------------------------------- | ---------- |
+| `max_id`          | Get a list of blocks with ID less than this value             | yes        |
+| `since_id`        | Get a list of blocks with ID greater than this value          | yes        |
+| `limit`           | Maximum number of blocks to get (Default 40, Max 80)          | yes        |
+
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. It is **not** possible to use the `id` of the returned objects to construct your own URLs, because the results are sorted by an internal key.
+
+Returns an array of strings.
+
+#### Blocking a domain
+
+    POST /api/v1/domain_blocks
+
+Parameters:
+
+| Field             | Description                                                         | Optional   |
+| ----------------- | ------------------------------------------------------------------- | ---------- |
+| `domain`          | Domain to block                                                     | no         |
+
+Returns an empty object.
+
+#### Unblocking a domain
+
+    DELETE /api/v1/domain_blocks
+
+Parameters:
+
+| Field             | Description                                                         | Optional   |
+| ----------------- | ------------------------------------------------------------------- | ---------- |
+| `domain`          | Domain to unblock                                                   | no         |
+
+Returns an empty object.
 
 ### Favourites
 
@@ -267,11 +305,11 @@ Query parameters:
 
 | Field             | Description                                                    | Optional   |
 | ----------------- | -------------------------------------------------------------- | ---------- |
-| `max_id`          | Get a list of favourites with ID less than or equal this value | yes        |
+| `max_id`          | Get a list of favourites with ID less than this value          | yes        |
 | `since_id`        | Get a list of favourites with ID greater than this value       | yes        |
 | `limit`           | Maximum number of favourites to get (Default 20, Max 40)       | yes        |
 
-`max_id` and `since_id` are usually get from the `Link` header.
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. It is **not** possible to use the `id` of the returned objects to construct your own URLs, because the results are sorted by an internal key.
 
 Returns an array of [Statuses](#status) favourited by the authenticated user.
 
@@ -285,11 +323,11 @@ Query parameters:
 
 | Field             | Description                                                         | Optional   |
 | ----------------- | ------------------------------------------------------------------- | ---------- |
-| `max_id`          | Get a list of follow requests with ID less than or equal this value | yes        |
+| `max_id`          | Get a list of follow requests with ID less than this value          | yes        |
 | `since_id`        | Get a list of follow requests with ID greater than this value       | yes        |
 | `limit`           | Maximum number of requests to get (Default 40, Max 80)              | yes        |
 
-`max_id` and `since_id` are usually get from the `Link` header.
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. It is **not** possible to use the `id` of the returned objects to construct your own URLs, because the results are sorted by an internal key.
 
 Returns an array of [Accounts](#account) which have requested to follow the authenticated user.
 
@@ -297,12 +335,6 @@ Returns an array of [Accounts](#account) which have requested to follow the auth
 
     POST /api/v1/follow_requests/:id/authorize
     POST /api/v1/follow_requests/:id/reject
-
-Parameters:
-
-| Field             | Description                                                         | Optional   |
-| ----------------- | ------------------------------------------------------------------- | ---------- |
-| `id`              | The id of the account to authorize or reject                        | no         |
 
 Returns an empty object.
 
@@ -322,13 +354,81 @@ Returns the local representation of the followed account, as an [Account](#accou
 
 ### Instances
 
-#### Getting instance information:
+#### Getting current instance information:
 
     GET /api/v1/instance
 
 Returns the current [Instance](#instance).
 
 Does not require authentication.
+
+#### Getting current instance's custom emojis:
+
+    GET /api/v1/custom_emojis
+
+Returns a list of [Emoji](#emoji)
+
+Does not require authentication.
+
+### Lists
+
+#### Retrieving lists
+
+    GET /api/v1/lists
+
+Returns at most 50 [Lists](#list) without pagination.
+
+#### Retrieving lists by membership
+
+    GET /api/v1/accounts/:id/lists
+    
+Returns at most 50 [Lists](#list) without pagination.
+
+#### Retrieving accounts in a list
+
+    GET /api/v1/lists/:id/accounts
+
+Returns [Accounts](#account) in the list. If you specify `limit=0` in the query, all accounts will be returned without pagination. Otherwise, standard account pagination rules apply.
+
+#### Retrieving a list
+
+    GET /api/v1/lists/:id
+
+Returns the specified [List](#list).
+
+#### Creating and updating a list
+
+    POST /api/v1/lists
+    PUT /api/v1/lists/:id
+
+Form data:
+
+| Field            | Description           | Optional  |
+| ---------------- | --------------------- | --------- |
+| `title`          | The title of the list | no        |
+
+Returns a new or updated [List](#list).
+
+#### Deleting a list
+
+    DELETE /api/v1/lists/:id
+
+Returns an empty object.
+
+#### Adding/removing accounts to/from a list
+
+    POST /api/v1/lists/:id/accounts
+    DELETE /api/v1/lists/:id/accounts
+
+Form data:
+
+| Field            | Description                               | Optional  |
+| ---------------- | ----------------------------------------- | --------- |
+| `account_ids`    | [Array](#parameter-types) of account IDs  | no        |
+
+> **Note:** Only accounts already followed by the authenticated user can be added to a list.
+
+Returns an empty object.
 
 ### Media
 
@@ -338,9 +438,10 @@ Does not require authentication.
 
 Form data:
 
-| Field             | Description                                                         | Optional   |
-| ----------------- | ------------------------------------------------------------------- | ---------- |
-| `file`            | Media to be uploaded                                                | no         |
+| Field             | Description                                                               | Optional   |
+| ----------------- | ------------------------------------------------------------------------- | ---------- |
+| `file`            | Media to be uploaded (encoded using `multipart/form-data`)                | no         |
+| `description`     | A plain-text description of the media, for accessibility (max 420 chars)  | yes        |
 
 Returns an [Attachment](#attachment) that can be used when creating a status.
 
@@ -354,11 +455,11 @@ Query parameters:
 
 | Field             | Description                                                         | Optional   |
 | ----------------- | ------------------------------------------------------------------- | ---------- |
-| `max_id`          | Get a list of mutes with ID less than or equal this value           | yes        |
+| `max_id`          | Get a list of mutes with ID less than this value                    | yes        |
 | `since_id`        | Get a list of mutes with ID greater than this value                 | yes        |
 | `limit`           | Maximum number of mutes to get (Default 40, Max 80)                 | yes        |
 
-`max_id` and `since_id` are usually get from the `Link` header.
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. It is **not** possible to use the `id` of the returned objects to construct your own URLs, because the results are sorted by an internal key.
 
 Returns an array of [Accounts](#account) muted by the authenticated user.
 
@@ -372,11 +473,12 @@ Query parameters:
 
 | Field             | Description                                                         | Optional   |
 | ----------------- | ------------------------------------------------------------------- | ---------- |
-| `max_id`          | Get a list of notifications with ID less than or equal this value   | yes        |
+| `max_id`          | Get a list of notifications with ID less than this value            | yes        |
 | `since_id`        | Get a list of notifications with ID greater than this value         | yes        |
 | `limit`           | Maximum number of notifications to get (Default 15, Max 30)         | yes        |
+| `exclude_types`   | Array of notifications to exclude (Allowed values: "follow", "favourite", "reblog", "mention")          | yes        |
 
-`max_id` and `since_id` are usually get from the `Link` header.
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. However, it is possible to use the `id` of the returned objects to construct your own URLs.
 
 Returns a list of [Notifications](#notification) for the authenticated user.
 
@@ -393,13 +495,26 @@ Returns the [Notification](#notification).
 Deletes all notifications from the Mastodon server for the authenticated user.
 Returns an empty object.
 
+#### Dismissing a single notification:
+
+    POST /api/v1/notifications/dismiss
+    
+Form data:
+
+| Field | Description                   | Optional   |
+| ----- | ----------------------------  | ---------- |
+| `id`  | Notification ID | no         |    
+
+Deletes a single notification from the Mastodon server for the authenticated user.
+Returns an empty object.
+
 ### Reports
 
 #### Fetching a user's reports:
 
     GET /api/v1/reports
 
-Returns a list of [Reports](#report) made by the authenticated user.
+Returns a list of [Reports](#report) made by the authenticated user. (This method is not entirely implemented and contains no useful information at this point)
 
 #### Reporting a user:
 
@@ -411,7 +526,7 @@ Form data:
 | ----------------- | ------------------------------------------------------------------- | ---------- |
 | `account_id`      | The ID of the account to report                                     | no         |
 | `status_ids`      | The IDs of statuses to report (can be an array)                     | no         |
-| `comment`         | A comment to associate with the report                              | no         |
+| `comment`         | A comment to associate with the report (up to 1000 characters)      | no         |
 
 Returns the finished [Report](#report).
 
@@ -426,13 +541,11 @@ Form data:
 | Field             | Description                                                         | Optional   |
 | ----------------- | ------------------------------------------------------------------- | ---------- |
 | `q`               | The search query                                                    | no         |
-| `resolve`         | Whether to resolve non-local accounts                               | no         |
+| `resolve`         | Whether to resolve non-local accounts (default: don't resolve)      | yes        |
 
 Returns [Results](#results).
 
 If `q` is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search.
-
-Does not require authentication.
 
 ### Statuses
 
@@ -469,11 +582,11 @@ Query parameters:
 
 | Field             | Description                                                              | Optional   |
 | ----------------- | ------------------------------------------------------------------------ | ---------- |
-| `max_id`          | Get a list of reblogged/favourited with ID less than or equal this value | yes        |
+| `max_id`          | Get a list of reblogged/favourited with ID less than this value          | yes        |
 | `since_id`        | Get a list of reblogged/favourited with ID greater than this value       | yes        |
 | `limit`           | Maximum number of reblogged/favourited to get (Default 40, Max 80)       | yes        |
 
-`max_id` and `since_id` are usually get from the `Link` header.
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. It is **not** possible to use the `id` of the returned objects to construct your own URLs, because the results are sorted by an internal key.
 
 Returns an array of [Accounts](#account).
 
@@ -489,7 +602,7 @@ Form data:
 | ----------------- | ------------------------------------------------------------------------ | ---------- |
 | `status`          | The text of the status                                                   | no         |
 | `in_reply_to_id`  | local ID of the status you want to reply to                              | yes        |
-| `media_ids`       | Array of media IDs to attach to the status (maximum 4)                   | yes        |
+| `media_ids`       | [Array](#parameter-types) of media IDs to attach to the status (maximum 4)                   | yes        |
 | `sensitive`       | Set this to mark the media of the status as NSFW                         | yes        |
 | `spoiler_text`    | Text to be shown as a warning before the actual content                  | yes        |
 | `visibility`       | Either "direct", "private", "unlisted" or "public"                      | yes        |
@@ -507,12 +620,30 @@ Returns an empty object.
     POST /api/v1/statuses/:id/reblog
     POST /api/v1/statuses/:id/unreblog
 
-Returns the target [Status](#status).
+Reblog: Returns the reblog [Status](#status).
+
+Unreblog: Returns the target [Status](#status).
 
 #### Favouriting/unfavouriting a status:
 
     POST /api/v1/statuses/:id/favourite
     POST /api/v1/statuses/:id/unfavourite
+
+Returns the target [Status](#status).
+
+#### Pinning/unpinning a status:
+
+    POST /api/v1/statuses/:id/pin
+    POST /api/v1/statuses/:id/unpin
+
+Returns the target [Status](#status).
+
+#### Muting/unmuting a conversation of a status
+
+    POST /api/v1/statuses/:id/mute
+    POST /api/v1/statuses/:id/unmute
+
+Only makes sense for statuses featured inside notifications directed at the user. Muting a status will prevent replies to it, favourites and replies of it from appearing in the user's notifications.
 
 Returns the target [Status](#status).
 
@@ -523,25 +654,28 @@ Returns the target [Status](#status).
     GET /api/v1/timelines/home
     GET /api/v1/timelines/public
     GET /api/v1/timelines/tag/:hashtag
+    GET /api/v1/timelines/list/:list_id
 
 Query parameters:
 
 | Field             | Description                                                                         | Optional   |
 | ----------------- | ----------------------------------------------------------------------------------- | ---------- |
 | `local`           | Only return statuses originating from this instance (public and tag timelines only) | yes        |
-| `max_id`          | Get a list of timelines with ID less than or equal this value                       | yes        |
+| `max_id`          | Get a list of timelines with ID less than this value                                | yes        |
 | `since_id`        | Get a list of timelines with ID greater than this value                             | yes        |
 | `limit`           | Maximum number of statuses on the requested timeline to get (Default 20, Max 40)    | yes        |
 
-`max_id` and `since_id` are usually get from the `Link` header.
+> **Note:** `max_id` and `since_id` for next and previous pages are provided in the `Link` header. However, it is possible to use the `id` of the returned objects to construct your own URLs.
 
 Returns an array of [Statuses](#status), most recent ones first.
 
-'public' and 'tag' timelines do not require authentication.
+Public and tag timelines do not require authentication.
 
 ___
 
 ## Entities
+
+> **Note:** Some attributes in the entity payload can have ``null`` value and are marked as _nullable_ on the tables below. Attributes that are not nullable are guaranteed to return a valid value.
 
 ### Account
 
@@ -562,6 +696,7 @@ ___
 | `avatar_static`          | URL to the avatar static image (gif)                                               | no       |
 | `header`                 | URL to the header image                                                            | no       |
 | `header_static`          | URL to the header static image (gif)                                               | no       |
+| `moved`                  | If the owner decided to switch accounts, new account is in this attribute          | yes      |
 
 ### Application
 
@@ -575,11 +710,15 @@ ___
 | Attribute                | Description                                                                       | Nullable |
 | ------------------------ | --------------------------------------------------------------------------------- | -------- |
 | `id`                     | ID of the attachment                                                              | no       |
-| `type`                   | One of: "image", "video", "gifv"                                                  | no       |
+| `type`                   | One of: "image", "video", "gifv", "unknown"                                       | no       |
 | `url`                    | URL of the locally hosted version of the image                                    | no       |
 | `remote_url`             | For remote images, the remote URL of the original image                           | yes      |
 | `preview_url`            | URL of the preview image                                                          | no       |
-| `text_url`               | Shorter URL for the image, for insertion into text (only present on local images) | no       |
+| `text_url`               | Shorter URL for the image, for insertion into text (only present on local images) | yes      |
+| `meta`                   | `small` and `original` containing: `width`, `height`, `size`, `aspect`            | yes      |
+| `description`            | A description of the image for the visually impaired (maximum 420 characters), or `null` if none provided  | yes      |
+
+> **Note**: When the type is "unknown", it is likely only `remote_url` is available and local `url` is missing
 
 ### Card
 
@@ -589,6 +728,14 @@ ___
 | `title`                  | The title of the card                      | no       |
 | `description`            | The card description                       | no       |
 | `image`                  | The image associated with the card, if any | yes      |
+| `type`                   | "link", "photo", "video", or "rich"        | no       |
+| `author_name`            | OEmbed data                                | yes      |
+| `author_url`             | OEmbed data                                | yes      |
+| `provider_name`          | OEmbed data                                | yes      |
+| `provider_url`           | OEmbed data                                | yes      |
+| `html`                   | OEmbed data                                | yes      |
+| `width`                  | OEmbed data                                | yes      |
+| `height`                 | OEmbed data                                | yes      |
 
 ### Context
 
@@ -597,7 +744,17 @@ ___
 | `ancestors`              | The ancestors of the status in the conversation, as a list of [Statuses](#status)   | no       |
 | `descendants`            | The descendants of the status in the conversation, as a list of [Statuses](#status) | no       |
 
+### Emoji
+
+| Attribute                | Description                        | Nullable |
+|--------------------------|------------------------------------|----------|
+| `shortcode`              | The shortcode of the emoji         | no       |
+| `static_url`             | URL to the emoji static image      | no       |
+| `url`                    | URL to the emoji image             | no       |
+
 ### Error
+
+The most important part of an error response is the HTTP status code. Standard semantics are followed. The body of an error is a JSON object with this structure:
 
 | Attribute                | Description                        | Nullable |
 | ------------------------ | ---------------------------------- | -------- |
@@ -611,7 +768,15 @@ ___
 | `title`                  | The instance's title                                                     | no       |
 | `description`            | A description for the instance                                           | no       |
 | `email`                  | An email address which can be used to contact the instance administrator | no       |
-| `version`                | The Mastodon version used by instance (as of version 1.3).               | yes      |
+| `version`                | The Mastodon version used by instance.                                   | no       |
+| `urls`                   | `streaming_api`                                                          | no       |
+
+### List
+
+| Attribute | Description       | Nullable |
+|-----------|-------------------|----------|
+| `id`      | ID of the list    | no       |
+| `title`   | Title of the list | no       |
 
 ### Mention
 
@@ -634,14 +799,16 @@ ___
 
 ### Relationship
 
-| Attribute                | Description                                                 | Nullable |
-| ------------------------ | ----------------------------------------------------------- | -------- |
-| `id`                     | Target account id                                           | no       |
-| `following`              | Whether the user is currently following the account         | no       |
-| `followed_by`            | Whether the user is currently being followed by the account | no       |
-| `blocking`               | Whether the user is currently blocking the account          | no       |
-| `muting`                 | Whether the user is currently muting the account            | no       |
-| `requested`              | Whether the user has requested to follow the account        | no       |
+| Attribute                | Description                                                  | Nullable |
+| ------------------------ | ------------------------------------------------------------ | -------- |
+| `id`                     | Target account id                                            | no       |
+| `following`              | Whether the user is currently following the account          | no       |
+| `followed_by`            | Whether the user is currently being followed by the account  | no       |
+| `blocking`               | Whether the user is currently blocking the account           | no       |
+| `muting`                 | Whether the user is currently muting the account             | no       |
+| `muting_notifications`   | Whether the user is also muting notifications                | no       |
+| `requested`              | Whether the user has requested to follow the account         | no       |
+| `domain_blocking`        | Whether the user is currently blocking the accounts's domain | no       |
 
 ### Report
 
@@ -654,9 +821,9 @@ ___
 
 | Attribute                | Description                              | Nullable |
 | ------------------------ | ---------------------------------------- | -------- |
-| `accounts`               | An array of matched [Accounts](#account) | yes      |
-| `statuses`               | An array of matchhed [Statuses](#status) | yes      |
-| `hashtags`               | An array of matched hashtags, as strings | yes      |
+| `accounts`               | An array of matched [Accounts](#account) | no      |
+| `statuses`               | An array of matched [Statuses](#status)  | no      |
+| `hashtags`               | An array of matched hashtags, as strings | no      |
 
 ### Status
 
@@ -671,17 +838,23 @@ ___
 | `reblog`                 | `null` or the reblogged [Status](#status)                                     | yes      |
 | `content`                | Body of the status; this will contain HTML (remote HTML already sanitized)    | no       |
 | `created_at`             | The time the status was created                                               | no       |
+| `emojis`                 | An array of [Emoji](#emoji)                                                   | no       |
 | `reblogs_count`          | The number of reblogs for the status                                          | no       |
 | `favourites_count`       | The number of favourites for the status                                       | no       |
 | `reblogged`              | Whether the authenticated user has reblogged the status                       | yes      |
 | `favourited`             | Whether the authenticated user has favourited the status                      | yes      |
-| `sensitive`              | Whether media attachments should be hidden by default                         | yes      |
+| `muted`                  | Whether the authenticated user has muted the conversation this status from    | yes      |
+| `sensitive`              | Whether media attachments should be hidden by default                         | no       |
 | `spoiler_text`           | If not empty, warning text that should be displayed before the actual content | no       |
 | `visibility`             | One of: `public`, `unlisted`, `private`, `direct`                             | no       |
 | `media_attachments`      | An array of [Attachments](#attachment)                                        | no       |
 | `mentions`               | An array of [Mentions](#mention)                                              | no       |
 | `tags`                   | An array of [Tags](#tag)                                                      | no       |
 | `application`            | [Application](#application) from which the status was posted                  | yes      |
+| `language`               | The detected language for the status, if detected                             | yes      |
+| `pinned`                 | Whether this is the pinned status for the account that posted it              | yes      |
+
+> **NOTE**: When `spoiler_text` is present, `sensitive` is true 
 
 ### Tag
 

@@ -12,14 +12,14 @@ If you want to localize Mastodon into your language, here is how.
 * [Testing the translation](#testing-the-translation)
 * [Updating the translation](#updating-the-translation)
 * [Appendix](#appendix)
-  * [Appendix A. Plural handling](appendix-a-plural-handling)
-  * [Appendix B. Command Tools](appendix-b-command-tools)
+  * [Appendix A. Plural handling](#appendix-a-plural-handling)
+  * [Appendix B. Command Tools](#appendix-b-command-tools)
 
 ---
 
 ## Overview
 
-There are two parts to Mastodon, the server and the web client. The translations for the web client are in [`app/javascript/mastodon/locales`](https://github.com/tootsuite/mastodon/tree/master/app/javascript/mastodon/locales). For the server-side, the translations live in [`config/locales`](https://github.com/tootsuite/mastodon/tree/master/config/locales) and are divided into different files. In addition, email templates for the server are found in [`app/views/user_mailer`](https://github.com/tootsuite/mastodon/tree/master/app/views/user_mailer). Here are all the files you’ll need to translate:
+There are two parts to Mastodon, the server and the web client. The translations for the web client are in [`app/javascript/mastodon/locales`](https://github.com/tootsuite/mastodon/tree/master/app/javascript/mastodon/locales). For the server-side, the translations live in [`config/locales`](https://github.com/tootsuite/mastodon/tree/master/config/locales) and are divided into different files. In addition, email templates for the server are found in [`app/views/user_mailer`](https://github.com/tootsuite/mastodon/tree/master/app/views/user_mailer). Here are all the files you'll need to translate:
 
 | Original file (English) | Location | Description |
 |---|---|---|
@@ -37,19 +37,19 @@ There are two parts to Mastodon, the server and the web client. The translations
 ### Obtain the Source Code
 
 If you use Github, first fork the Mastodon repository to your account. Then
-clone it to your local machine for further works.
+clone it to your local machine for further work.
 
-For details instructions, you may read our
+For detailed instructions, you may read our
 [Github cheatsheet](Translating-Github-Cheat-Sheet.md).
 
 ### Translating
 
-1. Duplicate the files in their folder and replace `en` in the filenames by your language’s standard two-letters code
-   ([ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)). Or [RFC5646](https://tools.ietf.org/html/rfc5646)
+1. Duplicate the files in their folder and replace `en` in the filenames with your language's standard two-letter
+   [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) code. Or [RFC5646](https://tools.ietf.org/html/rfc5646)
    language tags for regional languages.
 
    For instance `simple_form.en.yml` becomes `simple_form.es.yml` in the Spanish translation, and
-   `simple_form.zh-HK.yml` in Traditional Chinese (HK) translation.
+   `simple_form.zh-HK.yml` in the Traditional Chinese (HK) translation.
 
 2. Also replace the language code in the first lines of all the files, and the last line of the `.js` file.
 
@@ -65,14 +65,14 @@ The locales are mentioned in several other files. To activate your translation, 
 |---|---|---|
 | [`index.js`](https://github.com/tootsuite/mastodon/blob/master/app/javascript/mastodon/locales/index.js) | `app/javascript/mastodon/locales/index.js` | 2 lines to add |
 |[`mastodon.js`](https://github.com/tootsuite/mastodon/blob/master/app/javascript/mastodon/containers/mastodon.js) | `app/javascript/mastodon/containers/mastodon.js` | 1 line to add + 1 list to complete |
-| [`settings_helper.rb`](https://github.com/tootsuite/mastodon/blob/master/app/helpers/settings_helper.rb) | `app/helpers/settings_helper.rb` | 1 line to add + your language’s name |
+| [`settings_helper.rb`](https://github.com/tootsuite/mastodon/blob/master/app/helpers/settings_helper.rb) | `app/helpers/settings_helper.rb` | 1 line to add + your language's name |
 | [`application.rb`](https://github.com/tootsuite/mastodon/blob/master/config/application.rb) | `config/application.rb` | 1 list to complete |
 
 ### Sending the translation
 
 You can then push the files to git and submit a pull request.
 
-For details instructions, you may read our
+For detailed instructions, you may read our
 [Github cheatsheet](Translating-Github-Cheat-Sheet.md).
 
 ## Testing the translation
@@ -81,7 +81,7 @@ Once the pull request is accepted, wait for the code to be deployed on a Mastodo
 
 ## Updating the translation
 
-Keep an eye on the original English files in `app/javascript/mastodon/locales` and `config/locales`. When they are updated, pass on the changes to your language files. For new strings, add the new lines to the same position and translate them. Once you’re finished with the updates, you can submit a new pull request.
+Keep an eye on the original English files in `app/javascript/mastodon/locales` and `config/locales`. When they are updated, pass on the changes to your language files. For new strings, add the new lines to the same position and translate them. Once you're finished with the updates, you can submit a new pull request.
 
 ## Appendix
 
@@ -105,7 +105,7 @@ eat_apple:
 
 In both examples you can see a `one` case and an `other` case described for the pluralized strings. The exact strings is chosen by how many a certain quantity is -- when there is exactly one of something, the sentence goes to the `one` case; otherwise it goes to the `other` case. This how plualization works for English (`en`) and a few other languages.
 
-There are, however, many languages that don't operate in the one-other way. Polish as four plural forms, named `one`, `few`, `many`, and `other` respectively. Arabic has six. Chinese, Japanese, and Korean only have one form called `other`. If your language does not use one/other plural forms, be sure to check out the cardinal part of this [Unicode CIDR Plural Rules](http://www.unicode.org/cldr/charts/28/supplemental/language_plural_rules.html) chart. Also as a rule of thumb, always start translaing with the `other` case in the English files as they are better generalized than the `one` case.
+There are, however, many languages that don't operate in the one-other way. Polish has four plural forms, named `one`, `few`, `many`, and `other` respectively. Arabic has six. Chinese, Japanese, and Korean only have one form called `other`. If your language does not use one/other plural forms, be sure to check out the cardinal part of this [Unicode CLDR Plural Rules](http://www.unicode.org/cldr/charts/28/supplemental/language_plural_rules.html) chart. Also as a rule of thumb, always start translaing with the `other` case in the English files as they are better generalized than the `one` case.
 
 ### Appendix B. Command Tools
 
@@ -175,7 +175,7 @@ bundle exec i18n-tasks add-missing hu
 
 Please note that `health` would simply check the existence of the language key.
 It does not check if they are different from the default (English). Also the
-command `add-missing` only copy the English translation for your lanuage.
+command `add-missing` only copy the English translation for your language.
 
 In short, running `add-missing` can help you pass the `health` test, but you'd
 still need to check your yml and translate the "added" strings.
@@ -193,9 +193,9 @@ Build the webpack assets for development use. Also generate the frontend
 translation reference files. You'll need to run this every time you clone /
 fetch the source code.
 
-You'll need to run this before using `yarn manage:translation`.
+You'll need to run this before using `yarn manage:translations`.
 
-**`yarn manage:translation`**
+**`yarn manage:translations`**
 
 Based on [react-intl-translations-manager](https://www.npmjs.com/package/react-intl-translations-manager).
 Sync and check the translation strings. It will:
@@ -208,19 +208,19 @@ Sync and check the translation strings. It will:
 You may use the help command to get usage instructions:
 
 ```
-yarn manage:translation -- --help
+yarn manage:translations -- --help
 ```
 
 ##### Key Usages
 
 You may specify the language to sync and check:
 ```
-yarn manage:translation -- [language code]
+yarn manage:translations -- [language code]
 ```
 
 For example, to synchronize translations for French (**fr**):
 ```
-yarn manage:translation -- fr
+yarn manage:translations -- fr
 ```
 
 You may also use this to create json language files. You'd need to apply the
@@ -228,7 +228,7 @@ You may also use this to create json language files. You'd need to apply the
 were not
 created yet:
 ```
-yarn manage:translation -- --force ar
+yarn manage:translations -- --force ar
 ```
 will create the following language files:
 * app/javascript/mastodon/locales/**ar**.json
@@ -236,7 +236,7 @@ will create the following language files:
 
 #### Check Your Translations
 
-To see if you lanuage is doing good, you may mix using the command tools, like
+To see if your language is doing good, you may mix using the command tools, like
 this:
 
 ```

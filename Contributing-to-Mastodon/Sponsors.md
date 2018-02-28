@@ -6,51 +6,40 @@ These people make the development of Mastodon possible through [Patreon](https:/
 **Extra special Patrons**
 
 * glocal
-* Kurtis Rainbolt-Greene
 * Zoë Quinn
-* Jimmy Tidey
-* Kit Redgrave
-* Zeipher
-* Effy Elden
-* Julie Moronuki
+* Stéphane Zuckerman
+* World'sTallestLadder
 * Ted
-* Christoph Witzany
-* Philip James
+* CloudFleet
 * David Hutchinson
 * Martin Seeger
 * James Wright
 * Jeff Elder
-* Chad Arnold
-* Jen Savage
-* Andreas Zabari
 * SDF.ORG
+* Kit Redgrave
 * Ke_Ga
-* Leslie Pajuelo
-* Alan Rowarth
+* Pat Monaghan
+* Nicholas Frota
+* Edward Saperia
+* Andrea Valenti
+* Matteo De Micheli
+* Effy Elden
+* Philip James
+
+**Thank you to the following people**
+
 * Chu Ka-cheong
 * Sean Linsley
 * Kotaro Kawashima
 * Jesse Thomas Alford
 * A Dark Room iOS
-* Jeremy Banks
 * Nolan Lawson
 * Gen Knoxx
 * Moritz
-* Serhii Balbieko
-* Hugo Gameiro
 * Paco Hope
 * Great Scott Gadgets
 * slipstream/RoL
-* Danny O'Brien
-* Steve Johnson
-* demon
-
-**Thank you to the following people**
-
-* Pat Monaghan
-* Matteo De Micheli
 * Christopher Gamble
-* Niels Abildgaard
 * Leif Halldor Asgeirsson
 * Ellen Teapot
 * Josef Kenny
@@ -58,49 +47,34 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Spex
 * Jim Luke
 * Tyler Britten
-* Jess waldrip
 * Hbomb
 * Yoz Grahame
 * Jonas R. E.
-* Mark Wonnacott
-* Tim Ashley Jenkins
+* Jeremy Banks
+* Styromaniac
+* Masahito Zembutsu
+* Masto.host
+* Ben Werdmuller
+* nullkal
+* Sho Kusano / rosylilly
+* '@mecab
 * Austin Putman
 * J. C. Holder
-* Alex May
-* Mathew Woodyard
+* Del's Doodles
+* Niels Abildgaard
 * halcy
 * Sammie
-* Daniel Rosenfeld
-* A shy person
-* Jeremy Penner
-* Scott Hammack
-* Todd Monotony
-* snorpey
+* Danny O'Brien
+* Jess waldrip
 * David Yip
-* Erin Congden
-* Kevin Grasso
-* Christina Hendricks
 * iliana weller
 * Greg Slepak
 * Kyle Bishop
-* Irene Knapp
-* iris bull
-* Nicole Bacon
-* Crom
-* Brian Long
-* John Parker
-* André Koot
+* Tanya Dorey-Elias
+* Jonathan
 * ティン・ルーフ
-* David Hayward
-* s a
-* Frank Meeuwsen
-* Joel
-* Emily Jordan Klassen
-* Gabriel Puliatti
-* Glenn
-* Matt Lee
+* Emily Marigold Klassen
 * nobody
-* Jeremy Farnum
 * Dmytro Gladkyi
 * Hideki Yamamoto
 * Emma Humphries
@@ -109,48 +83,33 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Miki Habryn
 * Danielle McLean
 * Aaron Williamson
-* JantsoP
-* DJ Sundog
+* Yamagishi Kazutoshi
 * Ed Marshall
 * Gtom
-* Lachlan Collins
 * Nemecle
 * Manesh Pillai
 * C J Silverio
 * Micah Elizabeth Scott
-* Adam
-* Ryan Sipes
 * Pierre Vanhulst
 * Paul Lindner
 * peter hessler
-* joshua anderson
 * Zac Anger
 * 3xv
 * Kevin Sonney
 * Olivia Mossberg
 * Chris Johnson
 * Johannes Barre
-* Alda
 * Jacob Helwig
 * Joe McLaughlin
-* Takopix
 * Michael Kosler
 * Michael
 * Eramdam
-* Andy Pook
-* Michel McBride-Charpentier
 * Jonathan McDowell
-* Maff
-* Keisuke Matsuura
-* Leo Laporte
 * masklayer
 * Josephine Pedersen
 * q210
-* jemus42
-* Kenneth Larsen
 * Rey Tucker
 * Andrew Banchich
-* hogee
 * Bálint Szilakszi
 * Richard Minerich
 * Christopher James Halse Rogers
@@ -158,51 +117,231 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Jesse Vincent
 * Benjamin Sonntag
 * Matthieu Herrb
-* nikq
 * Irick Corwal
 * Nicolai Schwarz
-* Valérianne Lagrange
-* Jon
+* Dashie
+* Jon Leibowitz
 * anon
 * Philippe Lemaire
 * outofrange
 * Ryan Prior
 * Jesse Olson
-* Sonololo
-* Lars Trieloff
 * Kenneth Ken Sugar
-* USAMI Kenta
-* Rick Byers
+* USAMI Kenta; Zonu.EXE (@tadsan)
 * Anders Ekbom
 * Zaki
 * Brophey Wolf
 * Stolas
-* Bodil
-* Mark
 * Shinnosuke Iwaki
 * Alexander Zillion
 * Glen E. Ivey
 * James Adney
 * Paul Nathan
 * Martin Hinrichs
-* c
 * Jerry Gnarcia
 * Mykola Bilokonsky
-* Karen Cravens
-* Sonya Mann
-* Brian
-* Jelle
+* A shy person
+* Jeremy Penner
+* Scott Hammack
+* Todd Monotony
+* snorpey
+* Peter Hosey
+* Pierre de La Morinerie
+* Richard Pospesel
+* Cyprien Laplace
+* Mithaldu
+* Tim Ashley Jenkins
+* Kevin Grasso
+* Crom
+* Christina Hendricks
+* jemus42
+* Nitai bezerra da Silva
+* Aron Price
+* Matt Lee
+* whitequark
+* ml cohen
+* DJ Sundog
+* Yoshiki Kato
+* Jason Barbier
+* Sam Toland
+* fairenoughschroedinger
+* Jonathan Altman
+* Scott Honey
+* Harukasan
+* HenryKrinkle
+* therealkings
+* Charles Hutchins
+* Laurent Joubert
 * Ryan Frederick
-* Tom Harris
-* Syfaro
-* Benjamin Boyer
+* Irene Knapp
+* Alex May
+* joshua anderson
+* hogee
+* Masaya Imai
+* Koya Matsuo
+* Osamu Miyake
+* Anzu Takahashi
+* Alex Benishek
+* Sandro Hawke
+* yutarot
+* Bram
+* Danielle Jackson
+* Konosuke Furuhata
 * hakoai
-* Maddy T. Henry
+* Karen Cravens
+* Michel McBride-Charpentier
+* iris bull
+* Nicole Bacon
+* c
+* ordinarylava
+* Jennie Schilling
+* Colin Mahns
+* Caelyn McAulay
+* Nicholas Hinds
+* AlK
+* Jay Shapiro
+* Filippo Valsorda
+* William Hopkins
+* Jer Thorp
+* August Bigelow
+* James Renken
+* s18alg
+* Patrick O'Doherty
+* Valentin Ouvrard
+* matt Brabbin
+* Nathaniel Smith
+* Dave Lane
+* Justus Seifert
+* Jemaleddin Cole
+* Mike
+* j r conlin
+* Ash Furrow
+* Brian P.
+* Christoph Laszlo
+* Alexandre Dufournet
+* Rachel King
+* Joash Lewis
+* Tassels
+* Patrick Gibson
+* Wesley Moore
+* Damien Nicolas
+* Jason Rimmer
+* Chris Eppstein
+* Parker Higgins
+* André Koot
+* Brian Long
+* VisibleCode
+* B Cavello
+* Lia
+* Ben Sullivan
+* Mike Post
+* Colin Howells
+* Simon Richter
+* David
+* Caleb James DeLisle
+* Gwenael Tranvouez
+* Aleksi Tervo
+* Renato dos Santos Cerqueira
+* Tom Harris
+* h-izumi
+* Maff
+* David Hayward
+* Brooke
+* Bheesham Persaud
+* Solar Anamnesis
+* Daniel Nix
+* Chris Garcia
+* Mark Collins
+* Stacy Konkiel
+* Mathieu Chappuis
+* Chas Emerick
+* s a
+* Frank Meeuwsen
+* Joel
+* Craig Stevenson
+* Lionel Moreira
+* Erika
+* Jeremy Stashewsky
+* Matt Brubeck
+* August Lilleaas
+* Yoshiaki Kiura
+* Giovanni Angoli
+* Emmanuel Jacobs
+* Syfaro
+* Jan-Niklas Braak
+* Nathan Howell
+* Kai Engert
+* Gergo Lippai
+* Hiroshi Seki
+* Brent P. Newhall
+* moult
+* Nikki W
+* Peter Gravelle
+* Will Thompson
+* Niclas Darville
+* Ben Hamill
+* Michael Myers
+* Dale Price
+* mkatze
+* joachim robert
+* Bjarni R. Einarsson
+* Jack Grigg
+* Mark Stairwalt
+* Denis Valdenaire
+* Miebai
+* Scott Nesbitt
+* Bryce A. Lynch
+* Angus Gratton
+* Wes
+* Randy Resnick
+* Mathieu Lecarme
+* Lee Starnes
+* Tony Sarkees
+* Oliver Uvman
+* Ernest Worthing
+* qatuno '-sO-
+* Colby Dillion
+* Bryan Mitchell
+* Sjef
+* xanac
+* nanoplink
+* Aaron Brady
+* Raphael Lullis
+* Matija Han
+* gasche
+* usr_share
+* Ryan D
+* Michael Castleman
+* Jay Flaunts His Ignorance
+* Brennen Bearnes
+* Kyle Appelgate
+* Algot Runeman
+* bastien pelouse
+* Katie Collmar
+* Derek Gonyeo
+* colin mitchell
+* Jonathan Doda
+* tkpx
+* LoovtO
+* Kengo Nakajima
+* Toby Pinder
+* Muloka
+* Y G
+* Sam Thompson
+* Mark Gordon
+* Martin Weigert
+* pinfort
+* Tom Liesenfeld
+* Fabian Fabian
+* Oreolek
+* donnerdrummel
+* Root
+* tarah
 * Fletcher Cole
 * Arielle Grimes
 * Hodge
+* noisebox
 * Erik Bray
-* Wolfgang Maehr
 * Jelle
 * David Stark
 * Trace Evans
@@ -212,182 +351,88 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Simeon
 * Martin Tithonium
 * Sundi L Richard
-* BinarySplit
 * Stephan Okhuijsen
 * Tyler
-* ee
 * Andrew Replogle
 * Andrew Shu
 * Claus Wahlers
 * Solei Drackenseye
 * Will Springer
-* FM
-* Daria Ambrose
-* Sarah Ingram
+* Snowflake
 * Pablo Lopez Soriano
-* K.G. Orphanides
-* Colin Mahns
-* Caelyn McAulay
-* Nicholas Hinds
-* AlK
-* Jay Shapiro
-* Guilhem BLANCHARD
-* Filippo Valsorda
-* The Watercolor Gallery
-* William Hopkins
-* Paul Woolcock
-* WereK
-* Garret Kelly
-* Jer Thorp
-* August Bigelow
-* James Renken
-* Jessica Stokes
-* s18alg
-* Patrick O'Doherty
-* Valentin Ouvrard
-* Matt Brabbin
-* Nathaniel Smith
-* Dave Lane
-* Justus Seifert
-* Wes
-* Wladimir
-* Jemaleddin Cole
-* François Remy
-* Mike
-* j r conlin
-* Ash Furrow
-* Les Orchard
-* Brian P.
-* Christoph Laszlo
-* Alexandre Dufournet
-* Rachel King
-* Joash Lewis
-* Tassels
-* Patrick Gibson
-* Wesley Moore
-* Zachary Spector
-* Brooke
-* Jeremy Stashewsky
-* Damien Nicolas
-* Alex
-* Crow Moore
-* Jason Rimmer
-* Chris Eppstein
-* Parker Higgins
-* Shinsaku Chikura
-* Alexander
+* Moshi
+* Karolis Pocius
+* Maylis Agniel
+* rob fuller
+* Allen Varney
+* Edward L. Platt
+* Reyhan Sadaka
+* Josh Smith
+* Daniel Cassidy
+* Titus Stahl
+* Christopher Ranschaert
+* Alicia Goranson
+* Vincent Abinet
+* Florian Piesche
+* Flake
+* Matthew Gregg
 * Bitey Ferret
 * J. Allan Dale
 * Ickalo
-* Benoit Maison
-* nanoplink
-* Mathieu Chappuis
-* Chas Emerick
-* Joachim
-* Erika
-* Benjamin Beck
+* Jamie Durbin
+* Wilhelm Fitzpatrick
+* Beads Land-Trujillo
+* Konrad M. Lawson
+* Brian Small
+* Toootim
 * Kris Jacque
 * Modern Modron
-* Alin Rautoiu
 * Mnemonic Light
-* Bryan Nguyen
+* Bryan
 * Szmozsánszky István "Flaki"
 * Kemp
-* Fenreliania
 * Paul Rapoport
 * Lily
 * Calvin French
 * Memetic Hazard
 * Caitlin Collins
 * pixelguff
-* Emmanuel Jacobs
-* Jan-Niklas Braak
-* Nathan Howell
-* Kai Engert
-* Gergo Lippai
-* Dirk Eisenacher
-* Hiroshi Seki
-* Brent P. Newhall
-* moult
-* Nikki W
-* Peter Gravelle
-* Toot.Cat
-* Will Thompson
-* Niclas Darville
-* Aaron Brady
-* Lurene Grenier
-* Ben Hamill
-* Michael Myers
-* Dale Price
-* mkatze
-* joachim robert
-* Jack Grigg
-* Alex Dunn
-* Felix Laurie von Massenbach
-* Mike Kasprzak
-* Gareth Noyce
-* Colby Dillion
-* Bryan Mitchell
-* Sjef
-* Christine
-* Matija Han
-* gasche
-* usr_share
-* Ryan D
-* Michael Castleman
-* Jay Flaunts His Ignorance
-* Brennen Bearnes
-* petit_louis
-* Kyle Appelgate
-* Jeff
-* Algot Runeman
-* bastien pelouse
-* Katie Collmar
-* Derek Gonyeo
-* colin mitchell
-* Jonathan Doda
-* Guillaume HERVIER
-* LoovtO
-* Kengo Nakajima
-* Ashley Fisher
-* Toby Pinder
-* Muloka
-* Y G
-* Sam Thompson
-* Mark Gordon
-* Alex
-* Martin Weigert
-* pinfort
-* Tom Liesenfeld
-* Fabian Fabian
-* Oreolek
-* donnerdrummel
-* Root
-* reacocard
-* Andrea
-* J
-* belabor jaql
-* bunnyhero
+* Jason Lefkowitz
+* postrodent
+* Taiyo Fujii
+* Andy Pavlik
+* Neville Park
+* Rob Hunter
 * Andrew Schmadel
 * Pierre BT
+* Alex Dunn
+* Mike Verdone
+* Vivian L.
+* Brody Brooks
+* reacocard
+* Andrea
+* Sara Haworth
+* belabor jaql
+* bunnyhero
+* Kevin Hoerr
+* YoTTaBoozer
+* Mike T
+* Gareth Noyce
+* Cybrespace
+* Amadeus Folego
 * Stephen Burgess
 * Indi Latrani
-* MayakoLyyn
 * Christopher Armstrong
 * Keiji Matsuzaki
-* Melanie Kloes
+* Sumomi
 * neguse
-* RX14
 * Decio
 * Sean M Puckett
 * Connor Hudson
-* Joona Hoikkala
 * David Philipe Gil
 * mayoto
-* Bartleby
 * Richard Malone
 * dreid
-* Robbie Trencheny
 * Takuro Fukuda
 * Allen Baker
 * Henri Watson
@@ -396,14 +441,12 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Toby
 * Tobias Timpe
 * Jamie Bradway
-* Jean-Christophe Gatuingt
 * Claire Tolan
 * Pablo Defendini
 * Scott Moore
 * Kaylee
 * Ben Lee
 * Mel Reams
-* Supermarine Spitfire
 * Klastic
 * Matthew Cheely
 * koji narazaki
@@ -421,11 +464,9 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Iain Cheyne
 * Adrian Hon
 * Andrew Roach
-* Sean Carrick
+* Sean C
 * Cameron Callahan
-* George Ellenburg
 * Simon Tesla
-* Harald Wagener
 * Steve Phillips
 * Jon Pincus
 * HolyGrail
@@ -434,32 +475,22 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Richard
 * Axel Terizaki
 * Nurelin
-* Niels Bergervoet
-* Henning Krause
 * Larry Fine
-* Minivet
 * Willscire of the Many Tribes
-* Juho Makkonen
 * Bishnu Bhattacharyya
 * Krzysztof Jankowski
 * Claire
-* Caio Cesar G. Oliveira
 * Olivier Auber
-* Vancelance
 * Takahiro Fujiwara
 * simonv3
 * Nozomu Saito
 * Paul Houlihan
 * Ichigo Mayo
-* Gabriel Marcondes
+* LM
 * Frederick Doe
 * Jam
 * Balthasar Glättli
-* Lanicia
-* Nicolas Blanco
-* Paul Sheprow
 * Kota Ouchi
-* Serge K. Keller ❦
 * Infocalypse
 * James Valleroy
 * Kenny K
@@ -469,28 +500,22 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Drapher
 * Shawn
 * Raphaël Bevenot
-* Christopher Su
 * Holger Durer
-* Thomas Stojke
 * Decklin Foster
-* Julius Heyning
 * Casey Kolderup
-* Dyedgreen
 * Paul Chabane
 * Takeshi Umeda
 * Esteban Manchado Velázquez
 * Lars Kristian Høydal
 * Adam Guest
 * Jason S.
-* Michael Van Vleet
 * Chris Palmer
-* Rachel Sutton
 * Tomoya Matsuura
 * Luiz Irber
 * Roo Khan
 * Shinichi Sato
 * Paul Harvey
-* K.
+* K466
 * Drew Pope
 * Cassian Lotte Lodge
 * Nitin Dahyabhai
@@ -500,10 +525,8 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * D. Moonfire
 * Phoenix Veritas
 * Patrick L Archibald
-* Cait is making it rain slightly
 * Sud
 * Nathan Wittstock
-* VincenTimes
 * Anselm Hannemannn
 * Bryan Lunduke
 * Selena Knight
@@ -511,8 +534,6 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Felipe Martin
 * Kazunori Shinozaki
 * Jonas Wisser
-* Don Crimbchin
-* Justin Dorfman
 * ZmK
 * Katherine A Kearns
 * Shigure Yumesaki
@@ -521,13 +542,11 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * codechemist
 * Nicolas Grevet
 * Go Saito
-* Piers Beckley
 * Masafumi Otsune
 * Carl Friedrich Bolz
 * Jean-Philippe DUFRAIGNE
+* Antoine-Frédéric Raquin Strik
 * Stefan Hayden
-* Derek Lewis
-* Adam Dispenza
 * Lilith Saintcrow
 * Stephanie Northway
 * Spunkie
@@ -538,21 +557,14 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Diego Islas Ocampo - Hyuchia
 * Avi Flax
 * Fabricio C Zuardi
-* Paul Leonard
 * Max Bruckner
 * Dave Raftery
 * Firebird Fiction
 * Akira
 * Dmitri Sotnikov
-* Kate Cook
 * Bastien Remy
-* Øyvind Kolås
 * Shivian Morgan
 * Hirokazu Uzu
-* Thibaut
-* John McLaughlin
-* Emile Neuhaus
-* Loïc Guibert
 * Mark Davis
 * Pierre-Emmanuel Guerton
 * Zach Smith
@@ -561,39 +573,29 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Shelby Spees
 * Michael Brodhead
 * t3sserakt
-* Hugo Müller-Downing
-* Mattias
+* mpj
 * Phil Nelson
 * LJ
-* Braxton Fair
 * Warren
 * Andy
 * Arno Rieux
 * Florian Posdziech
-* Pierre Rudloff
 * Ben Tucci
 * Daniel Maxwell-Ross
-* Matthew Gregg
 * Abe Weishaupt
-* Kẏra
 * 8zu
 * Stephanie Pakrul
 * Reilly Grant
 * Kurt Mosiejczuk
-* Thomas Citharel
-* Forrest Oliphant
 * Sebastian Morr
 * Tim
-* umiyuki
-* socketwench
 * Salomao Becker
 * Loïc 'iooner' Keyeux
 * Syluban
-* geknow
+* Geknow
 * Alan Love
 * Stephen A. Goss
 * Bruno Dias
-* Christopher Rudolph
 * Teslawf
 * Tablesaw Tablesawsen
 * Brian Moore
@@ -601,32 +603,133 @@ These people make the development of Mastodon possible through [Patreon](https:/
 * Enrique Santos
 * Yoshitaka Kaneko
 * Rob Flickenger
-* Maxime Mélinon
 * Andrew Louis
-* Rajesh Patreon Krishnan
 * Javier Jardón
-* Dan Shick
+* D@n S.
 * Eric Mill
 * maloki / kinkymal
 * Karlo Luiten
-* Ryan
 * Wonderfall
 * Neva Nevi
 * Adam Frey
 * T54r4n1
 * Alexander
-* h-izumi
 * Helly
 * Justin Humm
 * Sam Marshall
-* Arthur Wang
-* Kevin Menzel
-* Yamagishi Kazutoshi
-* Jennie Schilling
-* Maxime Borges
-* Bjarni R. Einarsson
-* LM
-* Pat Rafferty
-* Andrew Davis
-* Antoine-Frédéric Raquin Strik
-* daemoneye
+* Artoria2e5
+* Sarah Felkar
+* Isida Zyun'iti
+* Max
+* mmmumble
+* Caitlin Potter
+* Asumu Takikawa
+* Juha Kivekäs
+* Colin Woodbury
+* trashkids
+* Tobasco da Gama
+* Julien Del Rio
+* Sinead McDonald
+* Scott Olson
+* Kyle R. Conway
+* Sai Hirano
+* Mark Kock
+* Larry Roberts
+* Étienne Deparis
+* Ginny McQueen
+* Andrea
+* Joe ST
+* Marty McGuire
+* Shumpei Urabe
+* Stéphane
+* pso2.club
+* Kyota Yasuda
+* Joshua Demallistre
+* KemoNine
+* Lyn Thorne-Alder
+* Eylul Dogruel
+* Emmanuel Kasper
+* Fabian Schmidt
+* Greg Sartucci
+* Sébastien Lalloué
+* Stefano Figura
+* Satoshi Endo
+* Satoshi KOJIMA
+* Bobby Richter
+* Craig Maloney
+* Lily Vulcano
+* Andrew W
+* Allison Parrish
+* Jacob Weisz
+* Jay Casey
+* Matt Baer
+* Ben Bonfil
+* unarist
+* Vincent Zeng
+* abcang
+* Will R
+* Gabriele Lucci
+* Hiro Ishii
+* tateisu
+* HerrGilbert
+* Axel Dürkop
+* masarakki
+* Cedric
+* Steve Lawson
+* Captain Skyhawk
+* Naoki Matsuyama
+* Ivan Sagalaev
+* Pablo Brasero
+* James Harris
+* Arkanosis
+* roelra
+* Michael Oman-Reagan
+* Kevin Hodgson
+* DataKnightmare
+* Benjamin
+* Lyrilith
+* Masoud Abkenar
+* Dustin Keitel
+* Takuya Yoshida
+* alexis goldusky
+* xj9
+* Ísólfur Jónsdóttir
+* Ryuichi Kubo
+* Will
+* ぽむ
+* MitarashiDango
+* Dennis Cassidy
+* no
+* Clworld
+* Testing
+* Kerim
+* syumari
+* Daniele Segoloni
+* Chris
+* itsumonotakumi
+* Kevin Beynon
+* dp
+* Cathal Garvey
+* osapon
+* Terry Elliott
+* Xavier B.
+* Stuart Hicks
+* Eldan Goldenberg
+* Sadiq Saif
+* Túlio Albuquerque
+* Matti Lattunen
+* David Laietta
+* tuxayo
+* Lily Sahiful B
+* Alexander Thompson
+* Markus Schmidt
+* Lertsenem
+* Shayne Power
+* Michael
+* Tom Kenny
+* Benoît S.
+* Izaro Basurko
+* ____Gender
+* Kazusa Okuda
+* German Martinez Maldonado
+* Dan Munro
